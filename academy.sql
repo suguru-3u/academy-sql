@@ -136,3 +136,41 @@ having sum(出金額) > 0
 
 --集計テーブル
 -- 非常に大量のデータを取り扱う場合、集計テーブルと呼ばれるテーブルを使用する
+
+-- *** 副問合せ（サブクエリ） ***
+-- expmalte
+-- 副問合せが実行後に実行される
+select 費目,出金額 from 家計簿
+-- 最初に以下を実行
+where 出金額　= (select Max(出金額) from 家計簿)
+
+-- 副問合せのパターン
+-- 1 単一の値 （1行1列）
+-- select文の選択列リストやfrom、Updateのset、whereに使用できる
+select 日付,メモ,出金額
+    (select 合計 from 家計簿集計
+    where 費目 = "食費") as 過去の合計
+from 家計簿アーカイブ
+where 費目 = '食費'
+
+-- 2 列挙された複数値 （n行1列）
+-- 複数の値の判定に使用するwhere,selectのfromに使用できる,INやANYやAll
+select * from 家計簿集計
+where 費目 IN (select DISTINCT 費目 from 家計簿)
+-- NOT INと<>ALL・・・全ての値が一致しないこと、
+-- INと = ANY ・・・・いずれかの値と一致すること
+-- 問合せの結果にNULLがあると全体の結果もNULLになる
+
+-- 3 表形式の複数値（n行n列）
+-- selectのfrom、INSERTで使用可能
+select SUN(SUB.出金額) AS 出金額合計
+from
+(select 日付,費目,出金額
+from 家計簿
+UNION
+select 日付,費目,出金額
+from 家計簿アーカイブ
+where 日付 >= "2018-10-01"
+and 日付 <= "2018-01-31") AS SUB
+
+-- Insertの副問い合わせは（）が存在しない
