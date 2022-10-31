@@ -202,3 +202,50 @@ select 列
 from テーブルA 
 right join テーブルB
 on 結合条件
+
+-- *** トランザクション ***
+-- 1つ以上のSQLを一塊として扱うことを指示することができる。
+-- この塊のことをトランザクションという
+-- トランザクションにより、処理の中断や他の人の処理が割り込めないようにする。
+
+BEGIN; --処理の開始（複数の処理を同時に行いたい）
+Insert into --~
+Insert into --~ 
+COMMIT; --終了の指示、変更の確定を行う
+
+BEGIN --処理の開始
+DELETE FROM 家計簿 WHERE 日付 = "2018-03-20"
+ROLLBACK; --終了の指示、変更の取り消しを行う（ここではDelete）
+
+BEGIN 
+-- Lock table 家計簿 IN EXCLUSIVE MODE（処理中に他の人によって家計簿テーブルの内容が変化しないようにSQLを実行）
+COMMIT
+
+
+-- *** テーブルの作成 ***
+-- DML・・・selectやupdateなど
+-- DDL・・・CreateやALTERなど
+-- TCL・・・COMMITやROLLBACKなど
+-- DCL・・・GRANT（DMLやDDLに関する許可や禁止の設定）
+CREATE TABLE 家計簿(
+    日付 DATE　NOT NULL, --NULLを許可しない
+    費目ID INTEGER REFERENCES 費目(ID) --外部キー（最後に足すパターンも存在する）
+    メモ VARCHAR(100) CHECK(メモ.length >= 0), --値の妥当性の確認
+    入金額 INTEGER DEFAULT 0, --値がなかった場合のデフォルト値
+)
+
+CREATE TABLE 費目(
+    ID INTEGER PRIMARY KEY, -- 主キー（単独の設定）
+    名前 VARCHAR(40) UNIQUE --重複の制約
+    PRIMARY KEY(ID,名前) --主キー(複数設定)
+) 
+
+-- 削除
+DROP TABLE テーブル名
+
+-- 変更
+ALTER TABLE
+-- 列の追加
+ALTER TABLE テーブル名 ADD 列名 型 制約
+-- 列の削除
+ALTER TABLE テーブル名 DROP 列名 型 制約
