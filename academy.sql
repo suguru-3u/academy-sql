@@ -235,7 +235,7 @@ CREATE TABLE 家計簿(
 )
 
 CREATE TABLE 費目(
-    ID INTEGER PRIMARY KEY, -- 主キー（単独の設定）
+    ID INTEGER PRIMARY KEY AUTO_INCREMENT, -- 主キー（単独の設定）
     名前 VARCHAR(40) UNIQUE --重複の制約
     PRIMARY KEY(ID,名前) --主キー(複数設定)
 ) 
@@ -249,3 +249,24 @@ ALTER TABLE
 ALTER TABLE テーブル名 ADD 列名 型 制約
 -- 列の削除
 ALTER TABLE テーブル名 DROP 列名 型 制約
+
+-- *** より便利なDB知識 ***
+-- * インデックスの使用
+
+-- * ビュー
+-- SQLの結果表をテーブルのように扱うことができるビューview
+create view ビュー名 as select文
+drop view ビュー名
+
+create view 家計簿4月 as
+select * from 家計簿
+where 日付 >= "2018-04-01"
+and 日付 <= "2018-04-30"
+
+--家計簿4月ビューを使ったSQL文の実行
+select * from 家計簿4月 --シンプルに書くことができる
+
+-- *** バックアップ ***
+--オフラインバックアップ：DBを停止して行うバックアップ
+--オンラインバックアップ：DBを稼働させながら行うバックアップ
+--データベースの内容、ログファイルの内容をバックアップする
