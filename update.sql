@@ -67,3 +67,9 @@ SELECT
     END AS main_club
 FROM StudentClub
 GROUP BY std_id;
+
+
+-- windouw関数
+select 口座番号,種別,残高,sum(残高) over(partition by 種別 order by 種別)
+from 口座
+-- partition byを使用してグルーピングしている。
