@@ -72,4 +72,6 @@ GROUP BY std_id;
 -- windouw関数
 select 口座番号,種別,残高,sum(残高) over(partition by 種別 order by 種別)
 from 口座
--- partition byを使用してグルーピングしている。
+-- partition byを使用してグルーピングし、order byでソートしている。
+-- sumの部分はいろんな種類が存在する。
+-- 参考サイト（https://resanaplaza.com/2021/10/17/%E3%80%90%E3%81%B2%E3%81%9F%E3%81%99%E3%82%89%E5%9B%B3%E3%81%A7%E8%AA%AC%E6%98%8E%E3%80%91%E4%B8%80%E7%95%AA%E3%82%84%E3%81%95%E3%81%97%E3%81%84-sql-window-%E9%96%A2%E6%95%B0%EF%BC%88%E5%88%86/）
